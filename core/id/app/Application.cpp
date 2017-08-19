@@ -19,7 +19,10 @@ bool Application::initGLFW()
 
 	int major, minor, revision;
 	glfwGetVersion(&major, &minor, &revision);
-	LOG(String("GLFW version ") + std::to_string(major) + "." + std::to_string(minor) + "." + std::to_string(revision) + " initialized succesfully");
+
+#if DEBUG
+	LOG(String("\nGLFW version ") + std::to_string(major) + "." + std::to_string(minor) + "." + std::to_string(revision) + " initialized succesfully");
+#endif
 
 	return true;
 }
@@ -33,7 +36,12 @@ bool Application::initGLEW()
 		return false;
 	}
 
-	LOG("GLEW initialized");
+#if DEBUG
+	LOG("\nGLEW initialized:");
+	LOG(String("VENDOR: ") + (GLchar*) glGetString(GL_VENDOR));
+	LOG(String("VERSION: ") + (GLchar*) glGetString(GL_VERSION));
+	LOG(String("RENDERER: ") + (GLchar*) glGetString(GL_RENDERER));
+#endif
 
 	return true;
 }
@@ -84,7 +92,7 @@ void Application::cleanup()
 	glfwTerminate();
 }
 
-Application::Application() : window(640, 480, "OpenGL Lab")
+Application::Application() : window(800, 600, "OpenGL Lab")
 {
 }
 

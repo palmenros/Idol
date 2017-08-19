@@ -21,3 +21,5 @@ add_executable(Idol ${SOURCE_FILES})
 #libOpenGL.so libGLEW.so libglut.so libglfw.so
 target_link_libraries(Idol libOpenGL.so libglfw.so libGLEW.so)
 include_directories(core)
+
+add_definitions(-DDEBUG)

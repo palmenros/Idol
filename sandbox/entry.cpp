@@ -1,5 +1,3 @@
-#include "id/app/Application.h"
-#include "Idol.h"
 #include "Sandbox.h"
 
 int main()
