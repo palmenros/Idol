@@ -36,6 +36,11 @@ private:
 public:
 
 	/*
+	 * Virtual destructor
+	 */
+	virtual ~Application() = default;
+
+	/*
 	 * Start the application
 	 */
 	void run();
