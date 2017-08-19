@@ -36,10 +36,11 @@ void VFS::addVolume(String volume, String path)
 	VFS::volumes[volume] = path;
 }
 
-String VFS::getTextFile(const String &path)
+String VFS::readTextFile(const String &path)
 {
 	return FileUtils::readTextFile(VFS::resolve(path));
 }
+
 String VFS::resolve(const String &path)
 {
 	for(const std::pair<String, String>& obj : VFS::volumes)

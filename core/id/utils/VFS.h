@@ -20,7 +20,7 @@ public:
 	 * Get file from virtual file system
 	 * Resolves to physical path
 	 */
-	static String getTextFile(const String& path);
+	static String readTextFile(const String &path);
 
 	/*
 	 * Resolve to physical path
