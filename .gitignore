@@ -1,2 +1,7 @@
 cmake-build-debug
 .idea
+Debug
+Release
+x64
+x86
+LabGL.vcxproj*
