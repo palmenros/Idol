@@ -65,7 +65,7 @@ public:
 	/*
 	 * Cleanup the application
 	 */
-	void cleanup();
+	virtual void cleanup();
 };
 
 }

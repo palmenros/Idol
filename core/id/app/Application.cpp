@@ -19,6 +19,10 @@ bool Application::initGLFW()
 
 	int major, minor, revision;
 	glfwGetVersion(&major, &minor, &revision);
+	
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 #if DEBUG
 	LOG(String("\nGLFW version ") + std::to_string(major) + "." + std::to_string(minor) + "." + std::to_string(revision) + " initialized succesfully");
@@ -72,6 +76,9 @@ void Application::run()
 {
 	if(!init())
 	{
+#if DEBUG
+		std::cin.get();
+#endif
 		return;
 	}
 

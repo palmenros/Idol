@@ -3,7 +3,12 @@
 namespace Idol
 {
 
-Window::Window(int width, int height, String name) : width(width), height(height), name(name)
+void Window::onWindowResize(GLFWwindow* window, int width, int height)
+{
+	glViewport(0, 0, width, height);
+}
+
+Window::Window(int width, int height, String name) : width(width), height(height), name(name), window(nullptr)
 {
 }
 
@@ -14,6 +19,7 @@ bool Window::shouldClose() const
 }
 bool Window::create()
 {
+
 	window = glfwCreateWindow(width, height, name.c_str(), nullptr, nullptr);
 
 	if(!window)
@@ -22,6 +28,12 @@ bool Window::create()
 	}
 
 	glfwMakeContextCurrent(window);
+	glfwSetFramebufferSizeCallback(window, &Window::onWindowResize);
+	
+	int frameWidth, frameHeight;
+	
+	glfwGetFramebufferSize(window, &frameWidth, &frameHeight);
+	glViewport(0, 0, frameWidth, frameHeight);
 
 	return true;
 }

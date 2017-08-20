@@ -12,7 +12,11 @@ private:
 	int width;
 	String name;
 	GLFWwindow* window;
+
 public:
+	
+	static void onWindowResize(GLFWwindow* window, int width, int height);
+
 	Window(int width, int height, String name);
 
 	/*
