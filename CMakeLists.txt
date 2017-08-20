@@ -27,4 +27,7 @@ add_executable(Idol ${SOURCE_FILES})
 target_link_libraries(Idol libOpenGL.so libglfw.so libGLEW.so)
 include_directories(core)
 
-add_definitions(-DDEBUG)
+add_definitions(
+    -DDEBUG
+    -D__PROJECT_DIR__="/home/pedro/CLionProjects/Idol/"
+)
