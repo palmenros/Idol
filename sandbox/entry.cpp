@@ -5,8 +5,7 @@ using namespace Idol;
 int main()
 {
 	//Setup VFS
-
-	VFS::addVolume("shaders", "B:/Users/Pedro/Documents/Visual Studio 2017/Projects/LabGL/LabGL/shaders");
+	VFS::addVolume("shaders", PROJECT_DIR("shaders"));
 
 	//Run sandbox
 	Sandbox app;
