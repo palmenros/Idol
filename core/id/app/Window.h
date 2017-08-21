@@ -16,6 +16,7 @@ private:
 public:
 	
 	static void onWindowResize(GLFWwindow* window, int width, int height);
+	static void onWindowKeyPress(GLFWwindow* window, int key, int scanCode, int action, int mods);
 
 	Window(int width, int height, String name);
 

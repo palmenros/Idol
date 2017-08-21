@@ -6,6 +6,11 @@ Shader::Shader(const String& vertexPath, const String& fragmentPath) : vertexPat
 {
 }
 
+Shader::~Shader()
+{
+	glDeleteProgram(program);
+}
+
 Shader* Shader::createFromFile(const String& vertexPath, const String& fragmentPath)
 {
 	Shader* shader = new Shader(vertexPath, fragmentPath);
@@ -70,12 +75,12 @@ void Shader::tryCompile(const String& path, GLuint shader)
 	}
 }
 
-void Shader::bind() const
+void Shader::use() const
 {
 	glUseProgram(program);
 }
 
-void Shader::unbind() const
+void Shader::disuse() const
 {
 	glUseProgram(0);
 }
@@ -96,6 +101,37 @@ uint Shader::resolveUniform(const String& name)
 	uniformCache[name] = location;
 
 	return location;
+}
+
+void Shader::setInt(const String& name, int32 value)
+{
+	setUniform1i(name, value);
+}
+
+void Shader::setFloat(const String& name, float value)
+{
+	setUniform1f(name, value);
+}
+
+void Shader::setVec2(const String& name, const math::vec2& vec)
+{
+	setUniform2f(name, vec);
+}
+
+void Shader::setVec3(const String& name, const math::vec3& vec)
+{
+	setUniform3f(name, vec);
+
+}
+
+void Shader::setVec4(const String& name, const math::vec4& vec)
+{
+	setUniform4f(name, vec);
+}
+
+void Shader::setMat4(const String& name, const math::mat4& mat)
+{
+	setUniformMat4(name, mat);
 }
 
 void Shader::setUniform1f(const String& name, float value)
@@ -175,6 +211,6 @@ void Shader::setUniform4f(uint location, const math::vec4& vec)
 
 void Shader::setUniformMat4(uint location, const math::mat4& mat)
 {
-	glUniformMatrix4fv(location, 1, GL_TRUE, &mat[0][0]);
+	glUniformMatrix4fv(location, 1, GL_FALSE, &mat[0][0]);
 }
 }

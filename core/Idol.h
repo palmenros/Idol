@@ -10,3 +10,4 @@
 #include "id/utils/VFS.h"
 
 #include "id/graphics/Shader.h"
+#include "id/graphics/Texture.h"

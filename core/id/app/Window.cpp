@@ -1,4 +1,5 @@
 #include "Window.h"
+#include "Application.h"
 
 namespace Idol
 {
@@ -6,6 +7,11 @@ namespace Idol
 void Window::onWindowResize(GLFWwindow* window, int width, int height)
 {
 	glViewport(0, 0, width, height);
+}
+
+void Window::onWindowKeyPress(GLFWwindow* window, int key, int scanCode, int action, int mods)
+{
+	Application::app->onKeyPress(key, scanCode, action, mods);
 }
 
 Window::Window(int width, int height, String name) : width(width), height(height), name(name), window(nullptr)
@@ -30,6 +36,8 @@ bool Window::create()
 	glfwMakeContextCurrent(window);
 	glfwSetFramebufferSizeCallback(window, &Window::onWindowResize);
 	
+	glfwSetKeyCallback(window, &Window::onWindowKeyPress);
+
 	int frameWidth, frameHeight;
 	
 	glfwGetFramebufferSize(window, &frameWidth, &frameHeight);

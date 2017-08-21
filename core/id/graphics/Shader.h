@@ -22,15 +22,25 @@ private:
 
 public:
 
+	virtual ~Shader();
+
 	static Shader* createFromFile(const String& vertexPath, const String& fragmentPath);
 
 	void compile();
-	void bind() const;
-	void unbind() const;
+	void use() const;
+	void disuse() const;
 
 	uint resolveUniform(const String& name);
 
 	//uniforms
+
+
+	void setInt(const String& name, int32 value);
+	void setFloat(const String& name, float value);
+	void setVec2(const String& name, const math::vec2& vec);
+	void setVec3(const String& name, const math::vec3& vec);
+	void setVec4(const String& name, const math::vec4& vec);
+	void setMat4(const String& name, const math::mat4& mat);
 
 	void setUniform1f(const String& name, float value);
 	void setUniform1fv(const String& name, float* value, size_t count);

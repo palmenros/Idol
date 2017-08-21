@@ -35,6 +35,8 @@ private:
 
 public:
 
+	static Application* app;
+
 	/*
 	 * Virtual destructor
 	 */
@@ -54,18 +56,26 @@ public:
 	 * Called every frame
 	 * @param currentTime Time since the start of the Application
 	 */
-	virtual void render(double currentTime);
+	virtual void render(double currentTime) = 0;
 
 	/*
 	 * Setup method, called on run.
 	 * Only called once, with a valid OpenGL context
 	 */
-	virtual void setup();
+	virtual void setup() = 0;
 
 	/*
 	 * Cleanup the application
 	 */
-	virtual void cleanup();
+	virtual void cleanup() = 0;
+
+	/*
+	 * Delete window and OpenGL context
+	 */
+	void destroy();
+
+	virtual void onKeyPress(int key, int scanCode, int action, int mods) = 0;
+
 };
 
 }

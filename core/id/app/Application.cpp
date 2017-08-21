@@ -3,6 +3,8 @@
 namespace Idol
 {
 
+Application* Application::app = nullptr;
+
 void Application::errorCallback(int errorCode, const char* description)
 {
 	ERROR("GLFW ERROR: " + String(description));
@@ -91,24 +93,20 @@ void Application::run()
 	}
 
 	cleanup();
+	destroy();
 }
 
-void Application::cleanup()
+
+void Application::destroy()
 {
 	window.destroy();
 	glfwTerminate();
+	app = nullptr;
 }
 
 Application::Application() : window(800, 600, "OpenGL Lab")
 {
-}
-
-void Application::setup()
-{
-}
-
-void Application::render(double currentTime)
-{
+	app = this;
 }
 
 }
