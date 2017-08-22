@@ -1,7 +1,6 @@
 #pragma once
 #include "id/app/Application.h"
 #include "Idol.h"
-#include <corecrt_math_defines.h>
 
 using namespace Idol;
 

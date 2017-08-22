@@ -19,13 +19,31 @@ set(SOURCE_FILES
         core/id/app/Window.h
         core/id/utils/VFS.cpp
         core/id/utils/VFS.h
-        sandbox/Sandbox.h)
+        sandbox/Sandbox.h
+        core/id/OpenGL.h
+        dependencies/stb_image.h
+        core/id/graphics/Texture.cpp
+        core/id/graphics/Texture.h
+        core/id/graphics/VertexArray.cpp
+        core/id/graphics/VertexArray.h
+        core/id/graphics/Buffer.cpp
+        core/id/graphics/Buffer.h
+        core/id/graphics/BufferLayout.cpp
+        core/id/graphics/BufferLayout.h
+        core/id/graphics/Camera.cpp
+        core/id/graphics/Camera.h
+        core/id/graphics/IndexBuffer.cpp
+        core/id/graphics/IndexBuffer.h
+        )
 
 add_executable(Idol ${SOURCE_FILES})
 
 #libOpenGL.so libGLEW.so libglut.so libglfw.so
 target_link_libraries(Idol libOpenGL.so libglfw.so libGLEW.so)
-include_directories(core)
+include_directories(
+        core
+        dependencies
+)
 
 add_definitions(
     -DDEBUG
