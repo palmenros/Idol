@@ -1,6 +1,7 @@
 #pragma once
 
-#include "Idol.h"
+#include "id/OpenGL.h"
+#include "id/Types.h"
 
 namespace Idol
 {
@@ -17,6 +18,7 @@ public:
 	
 	static void onWindowResize(GLFWwindow* window, int width, int height);
 	static void onWindowKeyPress(GLFWwindow* window, int key, int scanCode, int action, int mods);
+	static void mouseCallback(GLFWwindow* window, double xpos, double ypos);
 
 	Window(int width, int height, String name);
 
@@ -40,6 +42,9 @@ public:
 	 * Called every tick to update window
 	 */
 	void update();
+
+	void getWindowSize(int& width, int& height);
+	int getKey(int key);
 };
 
 }

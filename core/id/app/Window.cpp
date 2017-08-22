@@ -14,6 +14,11 @@ void Window::onWindowKeyPress(GLFWwindow* window, int key, int scanCode, int act
 	Application::app->onKeyPress(key, scanCode, action, mods);
 }
 
+void Window::mouseCallback(GLFWwindow* window, double xpos, double ypos)
+{
+	Application::app->setMouseCoordinates(xpos, ypos);
+}
+
 Window::Window(int width, int height, String name) : width(width), height(height), name(name), window(nullptr)
 {
 }
@@ -33,10 +38,13 @@ bool Window::create()
 		return false;
 	}
 
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	glfwMakeContextCurrent(window);
 	glfwSetFramebufferSizeCallback(window, &Window::onWindowResize);
 	
 	glfwSetKeyCallback(window, &Window::onWindowKeyPress);
+
+	glfwSetCursorPosCallback(window, &Window::mouseCallback);
 
 	int frameWidth, frameHeight;
 	
@@ -62,4 +70,13 @@ void Window::update()
 	}
 }
 
+void Window::getWindowSize(int& width, int& height)
+{
+	glfwGetWindowSize(window, &width, &height);
+}
+
+int Window::getKey(int key)
+{
+	return glfwGetKey(window, key);
+}
 }

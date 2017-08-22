@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Idol.h"
+#include "id/Types.h"
 
 namespace Idol
 {

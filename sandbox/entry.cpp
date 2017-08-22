@@ -10,6 +10,7 @@ int main()
 	VFS::addVolume("textures", PROJECT_DIR("media/textures"));
 
 	//Run sandbox
+
 	Sandbox app;
 	app.run();
 

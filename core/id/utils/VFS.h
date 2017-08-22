@@ -1,5 +1,5 @@
 #pragma once
-#include "Idol.h"
+#include "id/Types.h"
 #include <map>
 
 namespace Idol

@@ -1,4 +1,6 @@
 #include "Shader.h"
+#include "id/utils/VFS.h"
+#include "id/Common.h"
 
 namespace Idol {
 

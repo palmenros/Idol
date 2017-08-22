@@ -1,6 +1,10 @@
 #pragma once
-#include "Idol.h"
+
+#include "id/Types.h"
+#include "id/OpenGL.h"
+#include "id/Math.h"
 #include <map>
+
 
 namespace Idol {
 

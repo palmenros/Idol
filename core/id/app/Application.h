@@ -1,17 +1,23 @@
 #pragma once
-#include "Idol.h"
+
 #include "id/app/Window.h"
+#include "id/Math.h"
+
 namespace Idol
 {
 
 class Application
 {
-private:
+protected:
 
 	/*
-	 * Application's window instance
-	 */
+	* Application's window instance
+	*/
 	Window window;
+
+private:
+
+	bool firstMouse = true;
 
 	/*
 	 * Init GLFW
@@ -28,13 +34,19 @@ private:
 	 * Returns true if init is successful
 	 */
 	bool init();
+	
 	/*
 	 * Function called by GLFW when error happens
 	 */
 	static void errorCallback(int errorCode, const char* description);
 
-public:
+	void checkErrors();
 
+	String getErrorString(GLenum error);
+
+	math::vec2 lastMouse;
+
+public:
 	static Application* app;
 
 	/*
@@ -74,8 +86,12 @@ public:
 	 */
 	void destroy();
 
-	virtual void onKeyPress(int key, int scanCode, int action, int mods) = 0;
+	virtual void onKeyPress(int key, int scanCode, int action, int mods);
+	void setMouseCoordinates(double xpos, double ypos);
 
+	virtual void onMouseMoved(const math::vec2& offset) = 0;
+
+	int getKey(int key);
 };
 
 }

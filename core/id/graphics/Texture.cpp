@@ -1,6 +1,9 @@
 #include "Texture.h"
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
+#include "id/OpenGL.h"
+#include "id/utils/VFS.h"
+#include "id/Common.h"
 
 namespace Idol
 {
