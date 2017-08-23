@@ -8,39 +8,25 @@ class Sandbox : public Idol::Application
 {
 public:
 
-	VertexArray* vao = nullptr;
-	Buffer* vbo;
-	Shader* shader;
-	Texture *container, *face;
+	VertexArray* vao = nullptr, *lampVao = nullptr;
+	Buffer* vbo, *lampvbo;
+	Shader* shader, *lampShader;
 
 	float deltaTime = 0, lastTime = 0;
 
-	math::vec3 cameraPosition = math::vec3(0.f, 0.f, 4.f);
-	math::vec3 cameraFront = math::vec3(0.f, 0.f, -1.f);
-	math::vec3 cameraUp = math::vec3(0.f, 1.f, 0.f);
-
-	float fov = 45, rot = 0;
+	float fov = 45.f;
 	float far = 100, near = 0.1, aspectRatioModifier = 0.f;
-	float yaw = 90, pitch = 0;
 
 	Camera camera;
 
-	glm::vec3 cubePositions[10] = {
-		glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(2.0f, 5.0f, -15.0f),
-		glm::vec3(-1.5f, -2.2f, -2.5f),
-		glm::vec3(-3.8f, -2.0f, -12.3f),
-		glm::vec3(2.4f, -0.4f, -3.5f),
-		glm::vec3(-1.7f, 3.0f, -7.5f),
-		glm::vec3(1.3f, -2.0f, -2.5f),
-		glm::vec3(1.5f, 2.0f, -2.5f),
-		glm::vec3(1.5f, 0.2f, -1.5f),
-		glm::vec3(-1.3f, 1.0f, -1.5f)
-	};
+	math::vec3 objectColor = math::vec3(1, 0.5, 0.31);
+	math::vec3 lightColor = math::vec3(1, 1, 1);
+
+	math::vec3 lightPosition = math::vec3(1.2, 1.f, 2.f);
+
 
 	Sandbox() : camera(math::vec3(0.f, 0.f, 4.f))
 	{
-		
 	}
 
 	void onMouseMoved(const math::vec2& offset)
@@ -52,45 +38,45 @@ public:
 	{
 		deltaTime = currentTime - lastTime;
 		lastTime = currentTime;
+		
 		shader->use();
-
-		container->bind(0);
-		face->bind(1);
-
-		math::mat4 view = camera.getViewMatrix();
 
 		int height, width;
 		window.getWindowSize(width, height);
 
 		math::mat4 projection = math::perspective(math::radians(fov), float(width) / height, near, far);
 
-		shader->setMat4("view", view);
+		shader->setMat4("view", camera.getViewMatrix());
 		shader->setMat4("projection", projection);
-
+		
+		math::mat4 model;
+		model = math::rotate(model, (float)currentTime, math::vec3(0.f, 1.f, 0.f));
+		shader->setMat4("model", model);
 
 		GLfloat black[] = {0.f, 0.f, 0.f, 1.f};
 
 		glClear(GL_DEPTH_BUFFER_BIT);
 		glClearBufferfv(GL_COLOR, 0, black);
 
-		for (int i = 0; i < 10; i++)
-		{
-			const glm::vec3& v = cubePositions[i];
-			math::mat4 model;
-			model = math::translate(model, v);
+		shader->setVec3("objectColor", objectColor);
+		shader->setVec3("lightColor", lightColor);
+		shader->setVec3("lightPos", lightPosition);
+	
+		vao->draw(36);
 
-			if (i % 3 == 0)
-			{
-				model = math::rotate(model, math::radians(rot), math::vec3(0.f, 1.f, 0.f));
-			}
-
-			shader->setMat4("model", model);
-			vao->draw(36);
-		}
+		lampShader->use();
+		lampShader->setMat4("view", camera.getViewMatrix());
+		lampShader->setMat4("projection", projection);
+		
+		math::mat4 lampModel;
+		lampModel = math::translate(lampModel, lightPosition);
+		lampModel = math::scale(lampModel, math::vec3(0.2f));
+		lampShader->setMat4("model", lampModel);
+		
+		lampVao->draw(36);
 
 		processInput();
 	}
-
 
 	void setup() override
 	{
@@ -99,63 +85,58 @@ public:
 		shader = Shader::createFromFile("//shaders/Shader.vert", "//shaders/Shader.frag");
 		shader->compile();
 
-		container = Texture::createFromFile("//textures/container.jpg");
-		face = Texture::createFromFile("//textures/awesomeface.png");
-
-		shader->use();
-		shader->setInt("container", 0);
-		shader->setInt("face", 1);
+		lampShader = Shader::createFromFile("//shaders/Lamp.vert", "//shaders/Lamp.frag");
+		lampShader->compile();
 
 		float vertices[] = {
-			//Position (x, y, z)  TexCoord(x, y)
-			-0.5f, -0.5f, -0.5f, 0.0f, 0.0f,
-			0.5f, -0.5f, -0.5f, 1.0f, 0.0f,
-			0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
-			0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
-			-0.5f, 0.5f, -0.5f, 0.0f, 1.0f,
-			-0.5f, -0.5f, -0.5f, 0.0f, 0.0f,
+			-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+			0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+			0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+			0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+			-0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+			-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
 
-			-0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
-			0.5f, -0.5f, 0.5f, 1.0f, 0.0f,
-			0.5f, 0.5f, 0.5f, 1.0f, 1.0f,
-			0.5f, 0.5f, 0.5f, 1.0f, 1.0f,
-			-0.5f, 0.5f, 0.5f, 0.0f, 1.0f,
-			-0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
+			-0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+			0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+			0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+			0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+			-0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+			-0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
 
-			-0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
-			-0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
-			-0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
-			-0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
-			-0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
-			-0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
+			-0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+			-0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+			-0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+			-0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+			-0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+			-0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
 
-			0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
-			0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
-			0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
-			0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
-			0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
-			0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
+			0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+			0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+			0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+			0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+			0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+			0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
 
-			-0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
-			0.5f, -0.5f, -0.5f, 1.0f, 1.0f,
-			0.5f, -0.5f, 0.5f, 1.0f, 0.0f,
-			0.5f, -0.5f, 0.5f, 1.0f, 0.0f,
-			-0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
-			-0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
+			-0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+			0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+			0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+			0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+			-0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+			-0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
 
-			-0.5f, 0.5f, -0.5f, 0.0f, 1.0f,
-			0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
-			0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
-			0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
-			-0.5f, 0.5f, 0.5f, 0.0f, 0.0f,
-			-0.5f, 0.5f, -0.5f, 0.0f, 1.0f
+			-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+			0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+			0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+			0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+			-0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+			-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f
 		};
 
 		vao = new VertexArray();
 
 		BufferLayout layout;
 		layout.pushElement(BufferElement(0, 3, GL_FLOAT));
-		layout.pushElement(BufferElement(1, 2, GL_FLOAT));
+		layout.pushElement(BufferElement(1, 3, GL_FLOAT));
 
 		vbo = new Buffer(layout);
 		vbo->setData(vertices, sizeof(vertices));
@@ -163,14 +144,26 @@ public:
 		vao->bind();
 		vao->push(vbo);
 		vao->setLayout();
+	
+		BufferLayout lampLayout;
+		lampLayout.pushElement(BufferElement(0, 3, GL_FLOAT));
+		lampLayout.pushElement(BufferElement(-1, 3, GL_FLOAT));
+
+
+		lampvbo = new Buffer(lampLayout);
+		lampvbo->setData(vertices, sizeof(vertices));
+
+		lampVao = new VertexArray();
+		lampVao->bind();
+		lampVao->push(lampvbo);
+		lampVao->setLayout();
 	}
 
 	void cleanup() override
 	{
 		delete shader;
-		delete face;
-		delete container;
 		delete vao;
+		delete lampVao;
 	}
 
 	void processInput()
@@ -205,6 +198,5 @@ public:
 		{
 			camera.move(ECameraDirection::Down, deltaTime);
 		}
-
 	}
 };

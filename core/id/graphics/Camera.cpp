@@ -47,7 +47,7 @@ void Camera::onMouseMoved(const math::vec2& offset, bool constrainPitch)
 
 		if(pitch < -89.9)
 		{
-			pitch = 89.9;
+			pitch = -89.9;
 		}
 	}
 	else

@@ -10,13 +10,13 @@ namespace Idol
 {
 struct BufferElement
 {
-	uint index;
+	int index;
 	size_t count;
 	GLenum type;
 	GLboolean normalized;
 
 
-	BufferElement(uint index, size_t count, GLenum type, GLboolean normalized = GL_FALSE)
+	BufferElement(int index, size_t count, GLenum type, GLboolean normalized = GL_FALSE)
 		: index(index),
 		  count(count),
 		  type(type),

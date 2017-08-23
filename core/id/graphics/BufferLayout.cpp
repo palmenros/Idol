@@ -21,10 +21,14 @@ void BufferLayout::setLayout()
 
 	for (const BufferElement& e : elements)
 	{
-		glVertexAttribPointer(e.index, e.count, e.type, e.normalized, stride, (void*)offset);
-		glEnableVertexAttribArray(e.index);
+		if (e.index >= 0)
+		{
+			glVertexAttribPointer(e.index, e.count, e.type, e.normalized, stride, (void*)offset);
+			glEnableVertexAttribArray(e.index);
+		}
+
+		//If index is negative, ignore it because is just padding
 		offset += e.getSize();
 	}
 }
-
 }
